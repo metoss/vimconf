@@ -1,20 +1,5 @@
-silent !mkdir -p ~/.vim/autoload ~/.vim/dirs/backups ~/.vim/dirs/undos ~/.vim/dirs/tmp
-
 colorscheme default
 set background=dark
-
-call plug#begin('~/.vim/plugged')
-Plug 'flazz/vim-colorschemes'                                           " vim color scheme plugin
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'ycm-core/YouCompleteMe'
-call plug#end()
-
-set directory=~/.vim/dirs/tmp
-set backup
-set backupdir=~/.vim/dirs/backups
-set undofile
-set undodir=~/.vim/dirs/undos
 
 set nocompatible            "去除VI一致性
 syntax on                   "语法高亮
@@ -28,7 +13,7 @@ set autoindent              "自动缩进
 set shiftwidth=4            "缩进宽度
 set expandtab               "插入的制表符替换为空格, 可通过CTRL-V<Tab>插入真正的Tab
 set tabstop=4               "制表符宽度
-set nowrap                  "不对文本行进行折叠
+"set nowrap                  "不对文本行进行折叠
 set autowrite               "自动保存
 set autoread                "自动读取变化
 set hls                     "搜索关键词高亮
@@ -40,13 +25,86 @@ set fileencodings=utf-8,ucs-bom,gb2312,gbk  "打开文件,文件的编码猜测�
 
 let mapleader=";"   "定义<leader>键
 
-map <leader>w :w<CR>
+
+
+" --------------------------  plug.vim ----------------------------------
+
+   call plug#begin('~/.vim/plugged')
+
+   " Make sure you use single quotes
+
+   " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+   "Plug 'junegunn/vim-easy-align'
+
+   " Any valid git URL is allowed
+   "Plug 'https://github.com/junegunn/vim-github-dashboard.git'
+
+   " Multiple Plug commands can be written in a single line using | separators
+   "Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+
+   " On-demand loading
+   Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
+   "Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+
+   " Using a non-default branch
+   "Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+
+   " Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
+   "Plug 'fatih/vim-go', { 'tag': '*' }
+
+   " Plugin options
+   "Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
+
+   " Plugin outside ~/.vim/plugged with post-update hook
+   "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+
+   " Unmanaged plugin (manually installed and updated)
+   "Plug '~/my-prototype-plugin'
+
+   " [a, ]a, 遍历快捷键插件
+   Plug 'http://github.com/tpope/vim-unimpaired'
+
+   Plug 'http://github.com/vim-airline/vim-airline'
+   " Initialize plugin system
+   call plug#end()
+
+" Then reload .vimrc and :PlugInstall to install plugins.
+"| Option                  | Description                                      |
+"| ----------------------- | ------------------------------------------------ |
+"| `branch`/`tag`/`commit` | Branch/tag/commit of the repository to use       |
+"| `rtp`                   | Subdirectory that contains Vim plugin            |
+"| `dir`                   | Custom directory for the plugin                  |
+"| `as`                    | Use different name for the plugin                |
+"| `do`                    | Post-update hook (string or funcref)             |
+"| `on`                    | On-demand loading: Commands or `<Plug>`-mappings |
+"| `for`                   | On-demand loading: File types                    |
+"| `frozen`                | Do not update unless explicitly specified        |
+"
+" More information: https://github.com/junegunn/vim-plug
+"
+
+" --------------------- end plug.vim -----------------------------------
+
+" NERDTree 插件配置
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+let NERDTreeShowBookmarks = 1 " 启动NERDTree时显示书签
+
+" 当NERDTree窗口是最后一个窗口时自动关闭
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") &&
+  \ b:NERDTree.isTabTree()) | q | endif
+" -------------------------------------------------------------------
+
+
+
+" 快捷键
+inoremap <c-s> <ESC>:w!<CR>a
+noremap <c-s> <ESC>:w!<CR>
 map <leader>W :wall!<CR>
-map <leader>q :quit<CR>
-map <leader>Q :qall!<CR>
-map <leader>n :wnext<CR>
-map <leader>p :wprev<CR>
-map <leader>a :args
+
+map <leader>a :args 
 map <leader>b :buffer 
 map <leader>1 :buffer 1<cr>
 map <leader>2 :buffer 2<cr>
@@ -59,7 +117,23 @@ map <leader>8 :buffer 8<cr>
 map <leader>9 :buffer 9<cr>
 map <leader>l :buffers<cr>
 
-map \a :!./a.out
+" 使用<Ctrl>+hjkl快速在窗口间跳转
+noremap <c-h> <c-w><c-h>
+noremap <c-j> <c-w><c-j>
+noremap <c-k> <c-w><c-k>
+noremap <c-l> <c-w><c-l>
+" 使用 Ctrl + w,q 退出窗口(:close)
+" 使用 Ctrl + w,o 仅保留当前窗口(:only)
+map <leader>Q :qall!<CR>
+
+" 使用 :bd 命令删除当前缓冲区，并关闭当前窗口
+" 使用 :Bd 来关闭当前缓冲区，而保留分割窗口
+command! Bd :bp | :sp | :bn | :bd
+
+
+
+
+
 map <F9> :w!<ESC>:make<CR>
 map <F10> :!./a.out<CR>
 map <F5> <F9> <F10>
